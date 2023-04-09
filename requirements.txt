@@ -1,1 +1,1 @@
-pip install sklearn matplotlib
+pip install scikit-learn matplotlib
