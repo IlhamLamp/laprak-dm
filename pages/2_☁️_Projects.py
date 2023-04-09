@@ -3,9 +3,15 @@ import pickle
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
 
-model = pickle.load(open('./data/aqiOutput.sav', 'rb'))
-# df = pd.read_csv('./data/aqiFIX.csv')
+dir_path = os.path.dirname(os.path.realpath(__file__))
+model_path = os.path.join(dir_path, 'data', 'aqiOutput.sav')
+
+with open(model_path, 'rb') as f:
+    model = pickle.load(f)
+
+# model = pickle.load(open('./data/aqiOutput.sav', 'rb'))
 
 
 def projects():

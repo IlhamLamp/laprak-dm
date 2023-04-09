@@ -1,9 +1,16 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+model_path = os.path.join(dir_path, 'data', 'aqiFIX.csv')
+
+with open(model_path, 'rb') as f:
+    df = pd.read_csv(f)
 
 # membaca dataset
-df = pd.read_csv('./data/aqiFIX.csv')
+# df = pd.read_csv('./data/aqiFIX.csv')
 st.title("Charts")
 
 
