@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 model = pickle.load(open('./data/aqiOutput.sav', 'rb'))
-df = pd.read_csv('./data/aqiFIX.csv')
+# df = pd.read_csv('./data/aqiFIX.csv')
 
 
 def projects():
