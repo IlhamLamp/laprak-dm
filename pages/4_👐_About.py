@@ -17,7 +17,7 @@ def main():
 
     # Hero Section
     st.write(
-        "Website sederhana ini dibuat sebagai syarat Tugas Akhir Praktikum Data Mining Semester 6. Nostrud culpa consectetur do incididunt qui est proident adipisicing ea incididunt. Ex non aliquip est ullamco consectetur consectetur nostrud veniam id et sint anim. Magna consectetur excepteur et dolor voluptate nisi veniam nostrud eu id. Culpa et magna deserunt nulla in voluptate ipsum consectetur eiusmod ex nisi laborum ipsum ut. Consequat deserunt ipsum occaecat elit magna non.")
+        "Website sederhana ini dibuat sebagai syarat Tugas Akhir Praktikum Data Mining Semester 6. Nostrud culpa consectetur do incididunt qui est proident adipisicing ea incididunt. Ex non aliquip est ullamco consectetur consectetur nostrud veniam id et sint anim. Magna consectetur excepteur et dolor voluptate nisi veniam nostrud eu id. Culpa et magna deserunt nulla in voluptate ipsum consectetur eiusmod ex nisi laborum ipsum ut. Consequat deserunt ipsum occaecat elit magna.")
 
     st.header("Anggota Kelompok")
 
