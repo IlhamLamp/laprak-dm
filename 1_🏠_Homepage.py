@@ -1,41 +1,28 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="AQI Prediction",
-    page_icon="✍️"
+    page_title="D'Liver",
+    page_icon="💝"
 )
 
 
 def home():
     st.title("Halo Semuanya 😄")
     st.markdown(
-        "Project ini berjudul **AQI Prediction**, dimana kami mencoba mengukur indeks kualitas udara sekitar.")
+        "Project ini berjudul **D'Liver**, dimana kami mencoba mendiagnosa penyakit liver dengan beberapa parameter tertentu.")
     st.markdown(
-        "Dataset diambil dari link [berikut](https://www.kaggle.com/datasets/rohanrao/air-quality-data-in-india), dengan fokus pada kota Mumbai di India pada periode 2019-2020 pertengahan."
+        "Dataset diambil dari link [berikut](https://www.kaggle.com/code/harisyammnv/liver-disease-prediction). Metode yang digunakan adalah **Regresi Linier**, dan berikut adalah 2 hasil prediksi berdasarkan nilai: "
     )
-    st.write("Metode yang digunakan adalah **Regresi Linier**, dan berikut adalah skala AQI yang kami tetapkan: ")
     st.write("")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.success('**0 - 50 : Kualitas Udara Bagus ✅**')
+        st.success('**0 : Pasien tidak didiagnosis menderita penyakit hati. ✅**')
 
     with col2:
-        st.error('**201 - 300 : Kualitas Udara Tidak Sehat**')
-
-    with col1:
-        st.info('**51 - 100 : Kualitas Udara Sedang**')
-
-    with col2:
-        st.error('**301 - 400 : Kualitas udara Berat**')
-
-    with col1:
-        st.warning('**101 - 200 : Kualitas Udara Buruk**')
-
-    with col2:
-        st.error('**> 400 : Kualitas udara Berbahaya ⚠️**')
+        st.error('**1 : Pasien didiagnosis menderita penyakit hati. ⚠️**')
 
 
 home()
-st.sidebar.success("Select a page above.")
+st.sidebar.info("Select a page above.")

@@ -1,61 +1,47 @@
-import streamlit as st
 import pandas as pd
+import streamlit as st
 import matplotlib.pyplot as plt
+import altair as alt
 import os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-model_path = os.path.join(dir_path, 'data', 'aqiFIX.csv')
+model_path = os.path.join(dir_path, 'data', 'liver_patient.csv')
 
 with open(model_path, 'rb') as f:
     df = pd.read_csv(f)
 
-# membaca dataset
-# df = pd.read_csv('./data/aqiFIX.csv')
-st.title("Charts")
-
 
 def charts():
 
-    def aqi_mean():
-        st.header("Rata-Rata AQI Pada Tiap Bulannya")
+    def bar_charts():
+        st.header("Kasus berdasarkan Rentang Usia")
+        # Filter data to only include cases of liver disease
+        df_liver = df[df['Dataset'] == 1]
 
-        # menghitung rata-rata AQI pada tiap bulan
-        df['Month'] = pd.to_datetime(df['Date']).dt.month
-        df_mean = df.groupby('Month')['AQI'].mean().reset_index()
+        # Create a bar chart of age distribution
+        age_counts = df_liver['Umur'].value_counts().sort_index()
+        chart = alt.Chart(age_counts.reset_index()).mark_bar().encode(
+            x=alt.X('index:Q', title='Age'),
+            y=alt.Y('Umur:Q', title='Number of Cases')
+        )
 
-        # membuat dictionary untuk mapping bulan ke string
-        month_dict = {1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
-                      7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+        st.altair_chart(chart, use_container_width=True)
 
-        # mapping bulan ke string
-        df_mean['Month'] = df_mean['Month'].apply(lambda x: month_dict[x])
-
-        # mengurutkan data berdasarkan bulan
-        df_mean = df_mean.sort_values('Month')
-
-        # menampilkan chart
-        st.bar_chart(df_mean.set_index('Month'))
-
-    def pie_chart():
-        st.header("Rata-Rata Tiap Parameternya")
-
-        # mengambil kolom kecuali City dan Date
-        cols = df.columns[2:12]
-
-        # menghitung rata-rata tiap kolom
-        means = df.mean()[2:12]
-
-        # mengecek apakah sedang menggunakan dark mode
-
-        # membuat pie chart
-        fig, ax = plt.subplots(facecolor='none')
-        ax.pie(means, labels=cols, autopct='%1.1f%%')
-
-        # menampilkan plot di dalam Streamlit
+    def pie_charts():
+        # Pie chart
+        st.write("### Kasus berdasarkan Jenis Kelamin")
+        plt.style.use('seaborn')
+        fig, ax = plt.subplots()
+        colors = ['#ff9999', '#66b3ff']
+        ax.pie(df['Jenis_Kelamin'].value_counts(), labels=df['Jenis_Kelamin'].value_counts(
+        ).index, colors=colors, autopct='%1.1f%%', startangle=90)
+        ax.axis('equal')
         st.pyplot(fig)
 
-    aqi_mean()
-    pie_chart()
+    # call func
+    bar_charts()
+    pie_charts()
 
 
+#
 charts()

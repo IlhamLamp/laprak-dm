@@ -1,69 +1,77 @@
-import streamlit as st
-import pickle
-import streamlit as st
 import pandas as pd
 import numpy as np
+import streamlit as st
 import os
+from sklearn.ensemble import RandomForestClassifier
 
+# load dataset
 dir_path = os.path.dirname(os.path.realpath(__file__))
-model_path = os.path.join(dir_path, 'data', 'aqiOutput.sav')
+model_path = os.path.join(dir_path, 'data', 'liver_patient.csv')
 
 with open(model_path, 'rb') as f:
-    model = pickle.load(f)
+    df = pd.read_csv(f)
 
-# model = pickle.load(open('./data/aqiOutput.sav', 'rb'))
+# Drop missing values
+df = df.dropna()
 
+# Convert categorical data to numerical
+df['Jenis_Kelamin'] = df['Jenis_Kelamin'].map({'Pria': 1, 'Wanita': 0})
 
-def projects():
-    st.title('Prediksi indeks kualitas udara')
-    st.write("Masukkan nilai parameter berikut untuk menghitung AQI:")
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
-        pm25 = st.number_input("PM2.5")
-    with col2:
-        pm10 = st.number_input("PM10")
-    with col3:
-        no = st.number_input("NO")
-    with col4:
-        no2 = st.number_input("NO2")
-    with col1:
-        nox = st.number_input("NOx")
-    with col2:
-        nh3 = st.number_input("NH3")
-    with col3:
-        co = st.number_input("CO")
-    with col4:
-        so2 = st.number_input("SO2")
-    with col1:
-        o3 = st.number_input("O3")
-    with col2:
-        benzene = st.number_input("Benzene")
-
-    predict = ''
-
-    if st.button('Hitung AQI'):
-        predict = model.predict(
-            [[pm25, pm10, no, no2, nox, nh3, co, so2, o3, benzene]]
-        )
-
-        st.write('AQI saat ini adalah: ', predict)
-
-        if (predict <= 50) and (predict > 0):
-            st.success('Kualitas udara Bagus ✅')
-        elif (predict <= 100) and (predict > 50):
-            st.info('Kualitas udara Sedang')
-        elif (predict <= 200) and (predict > 100):
-            st.warning('Kualitas udara Buruk ')
-        elif (predict <= 300) and (predict > 200):
-            st.error('Kualitas udara Tidak Sehat')
-        elif (predict <= 400) and (predict > 300):
-            st.error('Kualitas udara Berat')
-        elif (predict > 400):
-            st.error('Kualitas udara Berbahaya ⚠️')
-        else:
-            st.write('Wrong input')
+# Define function to make prediction using Random Forest Classifier
 
 
-projects()
+def predict_liver_disease(umur, jk, tbil, dbil, alkphos, sgpt, sgot, tp, alb):
+    X = df[['Umur', 'Jenis_Kelamin', 'Total_Bilirubin', 'Direct_Bilirubin',
+            'Alkaline_Phosphotase', 'Alamine_Aminotransferase', 'Aspartate_Aminotransferase', 'Total_Protiens', 'Albumin']]
+    y = df['Dataset']
+
+    # Train the model
+    clf = RandomForestClassifier(n_estimators=100, max_depth=5)
+    clf.fit(X, y)
+
+    # Make prediction
+    prediction = clf.predict(
+        [[umur, jk, tbil, dbil, alkphos, sgpt, sgot, tp, alb]])
+
+    return prediction
+
+
+# Set page title
+st.title('Diagnosis Penyakit Liver')
+
+col1, col2, col3, col4 = st.columns(4)
+
+# Create input form
+umur = st.slider('Umur', min_value=0, max_value=100, value=50)
+with col1:
+    jk = st.selectbox('Jenis Kelamin', options=['Pria', 'Wanita'])
+with col2:
+    tbil = st.number_input('Total Bilirubin', min_value=0.0,
+                           max_value=100.0, value=0.7, step=0.1)
+with col3:
+    dbil = st.number_input('Direct Bilirubin', min_value=0.0,
+                           max_value=100.0, value=0.1, step=0.1)
+with col4:
+    alkphos = st.number_input('Alkaline Phosphotase',
+                              min_value=0, max_value=1000, value=187, step=10)
+with col1:
+    sgpt = st.number_input('Alamine Aminotransferase',
+                           min_value=0, max_value=1000, value=25, step=10)
+with col2:
+    sgot = st.number_input('Aspartate Aminotransferase',
+                           min_value=0, max_value=1000, value=35, step=10)
+with col3:
+    tp = st.number_input('Total Protein', min_value=0.0,
+                         max_value=10.0, value=7.6, step=0.1)
+with col4:
+    alb = st.number_input('Albumin', min_value=0.0,
+                          max_value=10.0, value=4.4, step=0.1)
+
+if st.button('Prediksi'):
+    jk = 1 if jk == 'Pria' else 0
+    prediction = predict_liver_disease(
+        umur, jk, tbil, dbil, alkphos, sgpt, sgot, tp, alb)
+    if prediction == 1:
+        st.error('Pasien didiagnosis menderita penyakit hati. ⚠️')
+    else:
+        st.success('Pasien tidak didiagnosis dengan penyakit hati. ✅')
